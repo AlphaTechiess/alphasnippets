@@ -234,8 +234,14 @@ final class Alpha_Snippets_Core {
 
 		$path = self::dir() . $filename;
 		$old_file_contents = is_file( $path ) ? @file_get_contents( $path ) : false;
+		
 		if ( ! self::write_atomic( $path, $code ) ) {
 			return false;
+		}
+
+		// CLEAR THE CACHE IMMEDIATELY AFTER WRITING
+		if ( function_exists( 'opcache_invalidate' ) ) {
+			opcache_invalidate( $path, true );
 		}
 
 		$snippet = array(
@@ -262,7 +268,6 @@ final class Alpha_Snippets_Core {
 		}
 
 		if ( ! self::manifest( $all ) ) {
-
 			if ( false !== $old_file_contents ) {
 				self::write_atomic( $path, $old_file_contents );
 			} else {
@@ -282,6 +287,7 @@ final class Alpha_Snippets_Core {
 	private static function write_atomic( $path, $body ) {
 		$temp = $path . '.tmp.' . wp_generate_uuid4();
 		if ( false === @file_put_contents( $temp, $body, LOCK_EX ) ) {
+			@unlink( $temp ); // Cleans up if a partial write fails
 			return false;
 		}
 		if ( @rename( $temp, $path ) ) {
