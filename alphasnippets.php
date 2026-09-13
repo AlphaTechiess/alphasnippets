@@ -3,7 +3,6 @@
  * Plugin Name: Alpha Snippets
  * Description: Lightweight PHP, PHP + HTML, CSS and JavaScript snippets.
  * Version: 1.0
- * Plugin URI: https://github.com/AlphaTechiess/alphasnippets
  * Author URI: https://github.com/AlphaTechiess
  * Author: Alpha Techies
  * License: GPL-2.0-or-later
